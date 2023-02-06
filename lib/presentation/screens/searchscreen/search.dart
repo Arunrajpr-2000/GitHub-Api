@@ -16,6 +16,7 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   UserProvider provider = UserProvider();
+  // String UserName = 'Arunrajpr-2000';
 
   @override
   void initState() {
@@ -26,9 +27,9 @@ class _SearchScreenState extends State<SearchScreen> {
 
   TextEditingController controller = TextEditingController();
   //provider.getUserProfile('');
-  getuser(String username) {
-    provider.getUserProfile(username);
-  }
+  // getuser(String username) {
+  //   provider.getUserProfile(username);
+  // }
 
   @override
   Widget build(BuildContext context) {

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:github_api/core/const.dart';
+import 'package:github_api/model/repo_model.dart';
 import 'package:github_api/model/user_model.dart';
 import 'package:github_api/providers/repo_provider.dart';
 import 'package:github_api/providers/user_providers.dart';
@@ -18,13 +19,11 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  UserProvider provider = UserProvider();
+  UserProvider userprovider = UserProvider();
   RepoProvider repoProvider = RepoProvider();
-// @override
-//   void didChangeDependencies() {
-//     // TODO: implement didChangeDependencies
-//     super.didChangeDependencies();
-//   }
+
+  RepoModel? repoModel;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -101,9 +100,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                 itemCount: 10,
                 itemBuilder: (context, index) {
-                  log(repoProvider.user![index].reponame.toString());
                   return ListTile(
-                    title: Text(repoProvider.user![index].reponame.toString()),
+                    title: Text('Repo Name'),
                     trailing: Column(
                       children: [k10height, Text('2 Forks'), Text('5 Stars')],
                     ),
