@@ -21,7 +21,7 @@ class UserModel {
       this.email});
 
   UserModel.fromJson(Map<String, dynamic> json) {
-    username = json['name'];
+    username = json['login'];
     bio = json['bio'];
     imageUrl = json['avatar_url'];
     followers = json['followers'];

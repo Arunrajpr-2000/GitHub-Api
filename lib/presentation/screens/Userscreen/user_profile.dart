@@ -9,10 +9,14 @@ import 'package:github_api/providers/user_providers.dart';
 
 class ProfileScreen extends StatefulWidget {
   UserModel userprofile;
-  String username;
+  List<RepoModel> repoList;
+  //String username;
 
-  ProfileScreen({Key? key, required this.userprofile, required this.username})
-      : super(key: key);
+  ProfileScreen({
+    Key? key,
+    required this.userprofile,
+    required this.repoList,
+  }) : super(key: key);
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -23,12 +27,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
   RepoProvider repoProvider = RepoProvider();
 
   RepoModel? repoModel;
+  List<RepoModel> searchlist = [];
+  // List<RepoModel>? gitRepoList;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    repoProvider.getRepo(widget.username);
+    RepoProvider.getRepo(widget.userprofile.username!);
+  }
+
+  searchFun(String repoName) {
+    setState(() {
+      searchlist = widget.repoList
+          .where((element) =>
+              element.reponame!.toLowerCase().contains(repoName.toLowerCase()))
+          .toList();
+    });
+    log(searchlist.toString());
   }
 
   @override
@@ -52,9 +68,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Text(widget.userprofile.username!),
                   Text(widget.userprofile.email ?? 'null'),
                   Text(widget.userprofile.location ?? 'Null'),
-                  Text(widget.userprofile.joiningDate!),
-                  Text('Followers ${widget.userprofile.followers!}'),
-                  Text('Following ${widget.userprofile.followings!}')
+                  Text(widget.userprofile.joiningDate ?? 'null'),
+                  Text('Followers ${widget.userprofile.followers ?? 'null'}'),
+                  Text('Following ${widget.userprofile.followings ?? 'null'}')
                 ],
               ),
             ],
@@ -67,6 +83,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: SizedBox(
               height: 50,
               child: TextFormField(
+                onChanged: (value) {
+                  searchFun(value);
+                },
                 decoration: const InputDecoration(
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(
@@ -98,12 +117,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 separatorBuilder: (context, index) => Divider(
                       color: Colors.black,
                     ),
-                itemCount: 10,
+                itemCount: searchlist.length,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    title: Text('Repo Name'),
+                    title: Text(searchlist[index].reponame.toString()),
                     trailing: Column(
-                      children: [k10height, Text('2 Forks'), Text('5 Stars')],
+                      children: [
+                        k10height,
+                        Text(searchlist[index].forkscount.toString()),
+                        Text(searchlist[index].starcount.toString())
+                      ],
                     ),
                   );
                 }),

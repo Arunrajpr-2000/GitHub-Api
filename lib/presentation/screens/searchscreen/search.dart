@@ -4,11 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:github_api/core/const.dart';
 import 'package:github_api/model/user_model.dart';
 import 'package:github_api/presentation/screens/Userscreen/user_profile.dart';
+import 'package:github_api/presentation/screens/splash.dart';
+import 'package:github_api/providers/repo_provider.dart';
 import 'package:github_api/providers/user_providers.dart';
 import 'package:provider/provider.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+  const SearchScreen({Key? key, required this.userlist}) : super(key: key);
+
+  final List<UserModel> userlist;
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -22,7 +26,8 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    provider.getUserProfile('Arunrajpr-2000');
+
+    searchuserlist = widget.userlist;
   }
 
   TextEditingController controller = TextEditingController();
@@ -31,8 +36,21 @@ class _SearchScreenState extends State<SearchScreen> {
   //   provider.getUserProfile(username);
   // }
 
+  List<UserModel>? searchuserlist;
+
+  searchFun(String userName) {
+    setState(() {
+      searchuserlist = widget.userlist
+          .where((element) =>
+              element.username!.toLowerCase().contains(userName.toLowerCase()))
+          .toList();
+    });
+    log(searchuserlist.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
+    log(widget.userlist.toString());
     return Scaffold(
       appBar: AppBar(
         title: Text('GitHub Searcher'),
@@ -45,7 +63,9 @@ class _SearchScreenState extends State<SearchScreen> {
             child: SizedBox(
               height: 70,
               child: TextFormField(
-                controller: controller,
+                onChanged: (value) {
+                  searchFun(value);
+                },
                 decoration: const InputDecoration(
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(
@@ -72,39 +92,35 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ),
           Expanded(
-            child:
-                //  ListView.builder(
-                //   itemCount: 10,
-                //   itemBuilder: (context, index) {
-                //  return
-                ListTile(
-              onTap: () {
-                log(provider.user.toString());
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ProfileScreen(
-                    username: provider.user!.username.toString(),
-                    userprofile: UserModel(
-                        username: provider.user!.username,
-                        imageUrl: provider.user!.imageUrl,
-                        bio: provider.user!.bio,
-                        email: provider.user!.email,
-                        location: provider.user!.location,
-                        joiningDate: provider.user!.joiningDate,
-                        followers: provider.user!.followers,
-                        followings: provider.user!.followings,
-                        publicRepo: provider.user!.publicRepo),
+            child: ListView.builder(
+              itemCount: searchuserlist!.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  onTap: () async {
+                    // log(provider.user.toString());
+                    final userprofile = await UserProvider.getUserProfile(
+                        searchuserlist![index].username.toString());
+
+                    final searchRepoList = await RepoProvider.getRepo(
+                        searchuserlist![index].username.toString());
+
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ProfileScreen(
+                          //username: searchuserlist![index].username!,
+                          repoList: searchRepoList,
+                          userprofile: userprofile[index]),
+                    ));
+                  },
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(
+                        searchuserlist![index].imageUrl.toString()),
                   ),
-                ));
+                  title: Text(searchuserlist![index].username.toString()),
+                  trailing: Text(
+                      'Repo : ${searchuserlist![index].publicRepo.toString()}'),
+                );
               },
-              leading: CircleAvatar(
-                backgroundImage:
-                    NetworkImage(provider.user!.imageUrl.toString()),
-              ),
-              title: Text(provider.user!.username.toString()),
-              trailing: Text('Repo : ${provider.user!.publicRepo.toString()}'),
             ),
-            //   },
-            // ),
           )
         ],
       ),

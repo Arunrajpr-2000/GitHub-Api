@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:github_api/model/user_model.dart';
 import 'package:github_api/presentation/screens/searchscreen/search.dart';
-import 'package:github_api/providers/user_providers.dart';
-import 'package:provider/provider.dart';
+import 'package:github_api/presentation/screens/splash.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,6 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const SearchScreen(),
+      home: const SplashScreen(),
     );
   }
 }

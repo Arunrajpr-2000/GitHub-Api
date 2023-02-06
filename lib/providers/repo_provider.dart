@@ -12,27 +12,36 @@ import 'package:http/http.dart' as http;
 class RepoProvider {
   RepoModel? user;
 
-  Future<void> getRepo(String username) async {
+  static Future<List<RepoModel>> getRepo(String username) async {
     final url = '${Api.api}/users/${username}/repos';
     log(url);
 
     try {
+      List<RepoModel> repolist = [];
       final response = await http.get(Uri.parse(url),
           headers: {'Authorization': 'token ${Api.token}'});
 
       final responseData = json.decode(response.body);
+      // log(responseData.toString());
+      for (var json in responseData) {
+        repolist.add(RepoModel.fromJson(json));
+      }
 
-      log(responseData[0]['name'].toString());
+      log(repolist.toString());
+      return repolist;
 
-      user = RepoModel(
-        reponame: responseData['name'],
-        starcount: responseData['stargazers_count'],
-        forkscount: responseData['forks_count'],
-      );
+      // log(responseData[0]['name'].toString());
+// return await responseData;
+      // user = RepoModel(
+      //   reponame: responseData['name'],
+      //   starcount: responseData['stargazers_count'],
+      //   forkscount: responseData['forks_count'],
+      // );
 
       // notifyListeners();
     } catch (e) {
       print(e);
+      return [];
     }
   }
 }
