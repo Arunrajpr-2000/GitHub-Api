@@ -10,8 +10,8 @@ import 'package:http/http.dart' as http;
 class UserProvider {
   UserModel? user;
 
-  static Future<List<UserModel>> getUserProfile(String? userName) async {
-    final url = '${Api.api}/users/$userName';
+  static Future<List<UserModel>> getUserList() async {
+    final url = '${Api.api}/users';
     log(url);
 
     try {
@@ -45,6 +45,27 @@ class UserProvider {
     } catch (e) {
       print(e);
       return [];
+    }
+  }
+
+  static Future<UserModel> getuserProfile(String username) async {
+    final url = '${Api.api}/users/$username';
+    log(url);
+
+    try {
+      // List<UserModel> usersList = [];
+
+      final response = await http.get(Uri.parse(url),
+          headers: {'Authorization': 'token ${Api.token}'});
+      // log(response.body);
+
+      final responseData = json.decode(response.body);
+      final user = UserModel.fromJson(responseData);
+
+      return user;
+    } catch (e) {
+      print(e);
+      return Future.error('error');
     }
   }
 }

@@ -98,7 +98,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 return ListTile(
                   onTap: () async {
                     // log(provider.user.toString());
-                    final userprofile = await UserProvider.getUserProfile(
+                    final userprofile = await UserProvider.getuserProfile(
                         searchuserlist![index].username.toString());
 
                     final searchRepoList = await RepoProvider.getRepo(
@@ -108,7 +108,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       builder: (context) => ProfileScreen(
                           //username: searchuserlist![index].username!,
                           repoList: searchRepoList,
-                          userprofile: userprofile[index]),
+                          userprofile: userprofile),
                     ));
                   },
                   leading: CircleAvatar(

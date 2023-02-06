@@ -34,7 +34,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    RepoProvider.getRepo(widget.userprofile.username!);
+    //RepoProvider.getRepo(widget.userprofile.username!);
+    searchlist = widget.repoList;
   }
 
   searchFun(String repoName) {
@@ -76,7 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
           k20height,
-          Text(widget.userprofile.bio ?? 'Null'),
+          Text(widget.userprofile.bio ?? 'No Bio'),
           k20height,
           Padding(
             padding: const EdgeInsets.all(8.0),
