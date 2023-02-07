@@ -1,11 +1,12 @@
 class RepoModel {
   String? reponame;
-
+  String? repoUrl;
   int? starcount;
   int? forkscount;
 
   RepoModel({
     this.reponame,
+    this.repoUrl,
     this.starcount,
     this.forkscount,
   });
@@ -14,14 +15,6 @@ class RepoModel {
     reponame = json['name'];
     starcount = json['stargazers_count'];
     forkscount = json['forks_count'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.reponame;
-    data['stargazers_count'] = this.starcount;
-    data['forks_count'] = this.forkscount;
-
-    return data;
+    repoUrl = json['svn_url'];
   }
 }

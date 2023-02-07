@@ -122,7 +122,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   title: Text(searchuserlist![index].username.toString()),
                   trailing: Text(
-                      'Repo : ${searchuserlist![index].publicRepo.toString()}'),
+                      "Repo : ${searchuserlist![index].publicRepo.toString() == null ? searchuserlist![index].publicRepo.toString() : 0}"),
                 );
               },
             ),

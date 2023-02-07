@@ -6,6 +6,7 @@ import 'package:github_api/model/repo_model.dart';
 import 'package:github_api/model/user_model.dart';
 import 'package:github_api/providers/repo_provider.dart';
 import 'package:github_api/providers/user_providers.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends StatefulWidget {
   UserModel userprofile;
@@ -36,6 +37,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     //RepoProvider.getRepo(widget.userprofile.username!);
     searchlist = widget.repoList;
+  }
+
+  Future<void> _launchInBrowser(String _url) async {
+    final uri = Uri.parse(_url);
+
+    log("uri :$uri");
+    if (!await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    )) {
+      throw Exception('Could not launch $uri');
+    }
   }
 
   searchFun(String repoName) {
@@ -70,19 +83,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Image.network(widget.userprofile.imageUrl!)),
               k40width,
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(widget.userprofile.username!),
-                  Text(widget.userprofile.email ?? 'null'),
-                  Text(widget.userprofile.location ?? 'Null'),
-                  Text(widget.userprofile.joiningDate ?? 'null'),
-                  Text('Followers ${widget.userprofile.followers ?? 'null'}'),
-                  Text('Following ${widget.userprofile.followings ?? 'null'}')
+                  Text(
+                    widget.userprofile.username!,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    widget.userprofile.email ?? 'No Email',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    widget.userprofile.location ?? 'No Location',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    widget.userprofile.joiningDate ?? 'No Joining Date',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    'Followers ${widget.userprofile.followers ?? '0'}',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    'Following ${widget.userprofile.followings ?? '0'}',
+                    overflow: TextOverflow.ellipsis,
+                  )
                 ],
               ),
             ],
           ),
           k20height,
-          Text(widget.userprofile.bio ?? 'No Bio'),
+          Text(
+            widget.userprofile.bio ?? 'No Bio',
+            overflow: TextOverflow.ellipsis,
+          ),
           k20height,
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -126,12 +161,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 itemCount: searchlist.length,
                 itemBuilder: (context, index) {
                   return ListTile(
+                    onTap: () async {
+                      await _launchInBrowser(
+                          searchlist[index].repoUrl.toString());
+                    },
                     title: Text(searchlist[index].reponame.toString()),
                     trailing: Column(
                       children: [
                         k10height,
-                        Text(searchlist[index].forkscount.toString()),
-                        Text(searchlist[index].starcount.toString())
+                        Text(
+                          '${searchlist[index].forkscount.toString()} Forks',
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          '${searchlist[index].starcount.toString()} Star',
+                          overflow: TextOverflow.ellipsis,
+                        )
                       ],
                     ),
                   );

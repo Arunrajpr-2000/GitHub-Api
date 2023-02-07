@@ -18,7 +18,7 @@ class SplashScreen extends StatelessWidget {
   gotoSearch(context) async {
     await Future.delayed(Duration(seconds: 2));
 
-    final userlist = await UserProvider.getUserList("");
+    final userlist = await UserProvider.getUserList("Arun");
 
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       builder: (context) => SearchScreen(userlist: userlist),

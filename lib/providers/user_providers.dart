@@ -11,8 +11,6 @@ class UserProvider {
   static Future<List<UserModel>> getUserList(String username) async {
     final url = '${Api.api}/search/users?q=$username';
 
-    final uri = '${Api.api}/users/$username'; //////////////////////////////
-
     log(url);
 
     try {
@@ -23,7 +21,8 @@ class UserProvider {
       final responseData = json.decode(response.body) as Map;
 
       for (var user in responseData["items"]) {
-        usersList.add(UserModel.fromJson(user));
+        final searchUser = UserModel.fromJson(user);
+        usersList.add(searchUser);
       }
 
       return usersList;
@@ -40,7 +39,6 @@ class UserProvider {
     try {
       final response = await http.get(Uri.parse(url),
           headers: {'Authorization': 'token ${Api.token}'});
-
       final responseData = json.decode(response.body);
       final user = UserModel.fromJson(responseData);
 
