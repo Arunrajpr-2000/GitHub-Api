@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:github_api/presentation/screens/searchscreen/search.dart';
 import 'package:github_api/providers/user_providers.dart';
@@ -16,7 +18,7 @@ class SplashScreen extends StatelessWidget {
   gotoSearch(context) async {
     await Future.delayed(Duration(seconds: 2));
 
-    final userlist = await UserProvider.getUserList();
+    final userlist = await UserProvider.getUserList("");
 
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       builder: (context) => SearchScreen(userlist: userlist),

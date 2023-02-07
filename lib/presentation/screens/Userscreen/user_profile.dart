@@ -52,7 +52,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('GitHub Searcher'),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: const Text(
+          'GitHub Searcher',
+          style: TextStyle(color: Colors.black),
+        ),
         centerTitle: true,
       ),
       body: Column(

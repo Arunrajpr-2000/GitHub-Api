@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:github_api/core/const.dart';
+import 'package:github_api/model/debouncer.dart';
 import 'package:github_api/model/user_model.dart';
 import 'package:github_api/presentation/screens/Userscreen/user_profile.dart';
 import 'package:github_api/presentation/screens/splash.dart';
@@ -37,15 +38,13 @@ class _SearchScreenState extends State<SearchScreen> {
   // }
 
   List<UserModel>? searchuserlist;
+  final _debouncer = Debouncer(milliseconds: 100);
 
   searchFun(String userName) {
-    setState(() {
-      searchuserlist = widget.userlist
-          .where((element) =>
-              element.username!.toLowerCase().contains(userName.toLowerCase()))
-          .toList();
+    _debouncer.run(() async {
+      searchuserlist = await UserProvider.getUserList(userName);
+      setState(() {});
     });
-    log(searchuserlist.toString());
   }
 
   @override
@@ -53,7 +52,12 @@ class _SearchScreenState extends State<SearchScreen> {
     log(widget.userlist.toString());
     return Scaffold(
       appBar: AppBar(
-        title: Text('GitHub Searcher'),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: const Text(
+          'GitHub Searcher',
+          style: TextStyle(color: Colors.black),
+        ),
         centerTitle: true,
       ),
       body: Column(
@@ -106,9 +110,10 @@ class _SearchScreenState extends State<SearchScreen> {
 
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => ProfileScreen(
-                          //username: searchuserlist![index].username!,
-                          repoList: searchRepoList,
-                          userprofile: userprofile),
+                        //username: searchuserlist![index].username!,
+                        repoList: searchRepoList,
+                        userprofile: userprofile,
+                      ),
                     ));
                   },
                   leading: CircleAvatar(
